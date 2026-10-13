@@ -3,87 +3,151 @@
 html, body { height: 100%; margin: 0; }
 
 body {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	gap: 1.5rem;
-	padding: 2rem 1rem;
-	font: 300 1.05rem/1.7 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-	color: #444;
-	background: #3b2f27 url("img/bg.jpg") center / cover no-repeat fixed;
+	font: 300 11pt/2 "Source Sans Pro", Helvetica, Arial, sans-serif;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: #414f57;
+	background-color: #fff;
+	background-image: url("img/overlay.png"), url("img/bg.jpg");
+	background-repeat: repeat, no-repeat;
+	background-size: 100px 100px, cover;
+	background-position: top left, center center;
+	background-attachment: fixed, fixed;
 }
 
-/* Darken the photo slightly so the card stands out. */
-body::before {
-	content: "";
-	position: fixed;
-	inset: 0;
-	background: rgba(20, 14, 10, 0.35);
-	z-index: -1;
+@media (min-width: 1681px) {
+	body { font-size: 14pt; }
 }
 
 @media (max-width: 900px) {
-	body { background-image: url("img/bg-small.jpg"); background-attachment: scroll; }
+	body { background-image: url("img/overlay.png"), url("img/bg-small.jpg"); }
+}
+
+@media (max-width: 480px) {
+	body { font-size: 10pt; line-height: 1.75; }
+}
+
+/* White-to-transparent veil that fades out once the page has loaded. */
+body::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+	opacity: 0;
+	pointer-events: none;
+	background-color: #fff;
+	background-image: url("img/overlay.png"), linear-gradient(60deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0));
+	background-repeat: repeat, no-repeat;
+	background-size: 100px 100px, cover;
+	transition: opacity 1.75s ease-out;
+}
+body.is-loading::after { opacity: 1; }
+
+#wrapper {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 100%;
+	padding: 1.5em;
+	perspective: 1000px;
+}
+/* Empty first flex item so the card sits centred and the footer at the bottom. */
+#wrapper::before { content: ""; display: block; }
+
+@media (max-width: 360px) {
+	#wrapper { padding: 0.75em; }
 }
 
 .card {
-	width: 100%;
-	max-width: 24rem;
-	padding: 2.5rem 2rem 2rem;
+	width: calc(736px + 6em); /* the original sizes the card to the logo's natural width */
+	max-width: 100%;
+	padding: 4.5em 3em 3em;
 	text-align: center;
 	background: #fff;
-	border-radius: 6px;
-	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
-	animation: rise 0.6s ease-out both;
+	border-radius: 4px;
+	opacity: 0.95;
+	cursor: default;
+	transform-origin: 50% 50%;
+	transition: opacity 1s ease, transform 1s ease;
+}
+body.is-loading .card {
+	opacity: 0;
+	transform: rotateX(15deg);
 }
 
-.logo { width: 80%; height: auto; }
+@media (max-width: 480px) {
+	.card { width: 100%; padding: 4em 2em 2.5em; }
+}
+
+.logo {
+	display: block;
+	width: 75%;
+	height: auto;
+	margin: 0 auto 0.5em;
+}
 
 h1 {
-	margin: 1.25rem 0 0.75rem;
-	font-size: 1.4rem;
-	font-weight: 600;
-	letter-spacing: 0.04em;
-	color: #222;
+	margin: 0 0 0.525em;
+	font-size: 1.85em;
+	font-weight: 300;
+	line-height: 1.5;
+	letter-spacing: 0.22em;
+	color: #313f47;
 }
 
-address { font-style: normal; }
+@media (max-width: 480px) {
+	h1 { font-size: 1.65em; }
+}
 
-a { color: inherit; text-decoration: none; }
-address a:hover { text-decoration: underline; }
+address {
+	margin: 0 0 1.5em;
+	font-style: normal;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+	transition: color 0.2s ease, border-color 0.2s ease;
+}
+a:hover { color: #ff7496; }
 
 .mail {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.5rem;
-	margin-top: 1.25rem;
-	padding-top: 1.25rem;
-	border-top: 1px solid #e5e5e5;
-	width: 100%;
 	justify-content: center;
+	width: 3.75em;
+	height: 3.75em;
+	border: 1px solid #c8cccf;
+	border-radius: 50%;
+	/* Bottom spacing the original gets from its icon list's padding and margin. */
+	margin-bottom: 2.175em;
+	color: #414f57;
 }
+.mail:hover { border-color: #ff7496; }
 .mail svg {
-	width: 1.25rem;
-	height: 1.25rem;
+	width: 1.85rem;
+	height: auto;
 	fill: none;
 	stroke: currentColor;
-	stroke-width: 1.5;
+	stroke-width: 2;
 	stroke-linejoin: round;
 }
-.mail:hover { color: #8a5a32; }
-
-footer {
-	font-size: 0.8rem;
-	color: rgba(255, 255, 255, 0.8);
-	text-align: center;
+@media (max-width: 480px) {
+	.mail svg { width: 1.5rem; }
 }
 
-@keyframes rise {
-	from { opacity: 0; transform: translateY(12px); }
-	to { opacity: 1; transform: none; }
+footer {
+	width: 100%;
+	padding-top: 1.5em;
+	font-size: 0.9em;
+	text-align: center;
+	color: rgba(255, 255, 255, 0.75);
+	cursor: default;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.card { animation: none; }
+	body::after, .card { transition: none; }
 }
